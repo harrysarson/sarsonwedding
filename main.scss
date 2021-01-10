@@ -1,0 +1,88 @@
+$spacing: 20px;
+
+html,
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	display: grid;
+	box-sizing: border-box;
+	font-family: Verdana, Geneva, sans-serif;
+	overflow-x: hidden;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+.login {
+	margin: auto;
+	padding: $spacing/2;
+	> * {
+		text-align: center;
+		margin: $spacing 0;
+	}
+	.go {
+		border: 1px solid black;
+		padding: 2px;
+		border-radius: 10%;
+	}
+	input,
+	button {
+		height: 2.3em;
+	}
+}
+
+.app {
+	.content {
+		border: 1px solid black;
+		width: 67%;
+		margin: 0 auto;
+		> * {
+			margin: $spacing auto;
+			display: block;
+		}
+	}
+	.pages {
+		border: 1px solid red;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		padding: $spacing/2;
+		> * {
+			border: 1px solid green;
+			margin: $spacing/2;
+			padding: 10px;
+			width: 66%;
+
+			&:nth-child(2n) {
+				margin-left: auto;
+
+			}
+		}
+	}
+}
+
+.hidable {
+	opacity: 1;
+	&[data-hide='true'] {
+		opacity: 0;
+		:not(&) {
+			transition: opacity 1s;
+		}
+	}
+}
+
+.footer {
+	position: fixed;
+	display: flex;
+	padding: $spacing/2;
+	width: 100%;
+	bottom: 0;
+	background: pink;
+	> * {
+		margin: $spacing/2;
+	}
+}

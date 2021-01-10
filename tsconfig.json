@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "lib": [
+            "ES2015",
+            "ES2018",
+            "dom"
+        ],
+        "esModuleInterop": true,
+        "target": "ES2020",
+        "moduleResolution": "node"
+    },
+    "exclude": ["**/node_modules/**"]
+}
