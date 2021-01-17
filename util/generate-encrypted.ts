@@ -71,10 +71,6 @@ async function main() {
 		);
 	})();
 
-	console.log(new Uint8Array(cypherText));
-	console.log(encodeBytesAsBase64(cypherText));
-	console.log(new Uint8Array(decodeBytesFromBase64(encodeBytesAsBase64(cypherText))));
-
 	fs.writeFile(
 		'encrypted.ts',
 		`
