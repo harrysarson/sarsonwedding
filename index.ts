@@ -1,6 +1,8 @@
 import './main.scss';
 import 'regenerator-runtime/runtime';
 import { getInfo, tryCache, tryPassword } from './get-info';
+import { Elm } from './src/Main';
+import invite from './images/invite.jpg';
 
 // import marked from 'marked';
 
@@ -23,33 +25,40 @@ async function loadApp(key: CryptoKey) {
 	document.querySelector('#login')?.setAttribute('hidden', '');
 	document.querySelector('#app')?.removeAttribute('hidden');
 	const info = await getInfo(key);
-	const $pages = document.querySelectorAll('.pages');
-	$pages.forEach($page => {
-		$page.textContent = "";
-		info.pages.forEach((page, i) => {
-			const $a = document.createElement('a');
-			$a.id = `page-${i}`;
-			$a.innerText = page.name;
-			const $h = document.createElement('h1');
-			$h.append($a);
-			const $div = document.createElement('div');
-			$div.append($h);
-			$div.insertAdjacentHTML('beforeend', (page.text));
-			$page.append($div)
-		});
-	});
-	const $footers = document.querySelectorAll('.footer');
-	$footers.forEach($footer => {
-		$footer.textContent = "";
-		info.pages.forEach((page, i) => {
-			const $a = document.createElement('a');
-			$a.href = `#page-${i}`;
-			$a.innerText = page.name;
-			const $div = document.createElement('div');
-			$div.append($a);
-			$footer.append($div)
-		});
-	});
+	Elm.Main.init({ flags: {
+		pages: info.pages,
+		images: {
+			invite,
+			sarsonsToBe: []
+		}
+	} })
+	// const $pages = document.querySelectorAll('.pages');
+	// $pages.forEach($page => {
+	// 	$page.textContent = "";
+	// 	info.pages.forEach((page, i) => {
+	// 		const $a = document.createElement('a');
+	// 		$a.id = `page-${i}`;
+	// 		$a.innerText = page.name;
+	// 		const $h = document.createElement('h1');
+	// 		$h.append($a);
+	// 		const $div = document.createElement('div');
+	// 		$div.append($h);
+	// 		$div.insertAdjacentHTML('beforeend', (page.text));
+	// 		$page.append($div)
+	// 	});
+	// });
+	// const $footers = document.querySelectorAll('.footer');
+	// $footers.forEach($footer => {
+	// 	$footer.textContent = "";
+	// 	info.pages.forEach((page, i) => {
+	// 		const $a = document.createElement('a');
+	// 		$a.href = `#page-${i}`;
+	// 		$a.innerText = page.name;
+	// 		const $div = document.createElement('div');
+	// 		$div.append($a);
+	// 		$footer.append($div)
+	// 	});
+	// });
 }
 
 async function init() {
