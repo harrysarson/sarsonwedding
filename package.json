@@ -1,6 +1,8 @@
 {
 	"scripts": {
-		"build": "npx elm-ts-interop --entrypoint Main --output src/Main/index.d.ts"
+		"build": "elm-ts-interop --entrypoint Main --output src/Main/index.d.ts && parcel build index.html",
+		"autogen": "ts-node util/generate-encrypted $PASSWORD_HASH",
+		"start": "parcel index.html"
 	},
 	"devDependencies": {
 		"@incrementalelm/elm-ts-interop-pro": "0.0.9",
@@ -17,6 +19,8 @@
 		"ts-node": "9.1.1",
 		"typescript": "4.1.3"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"io-ts": "2.2.14"
+	},
 	"browserslist": "last 2 Chrome versions"
 }

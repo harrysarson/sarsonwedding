@@ -1,10 +1,11 @@
-module Route exposing (Page(..), fromUrl, href, replaceUrl)
+module Route exposing (Page(..), fromUrl, href, pushUrl, replaceUrl)
 
 import Browser.Navigation as Nav
 import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
+import Url.Builder
+import Url.Parser as Parser exposing ((</>), Parser, oneOf, s)
 
 
 
@@ -20,7 +21,7 @@ parser : Parser (Page -> a) a
 parser =
     oneOf
         [ Parser.map Home Parser.top
-        , Parser.map Tab (s "info" </> string)
+        , Parser.map Tab (s "info" </> Parser.custom "PAGE" Url.percentDecode)
         ]
 
 
@@ -38,12 +39,17 @@ replaceUrl key route =
     Nav.replaceUrl key (routeToString route)
 
 
+pushUrl : Nav.Key -> Page -> Cmd msg
+pushUrl key route =
+    Nav.pushUrl key (routeToString route)
+
+
 fromUrl : Url -> Maybe Page
 fromUrl url =
     -- The RealWorld spec treats the fragment like a path.
     -- This makes it *literally* the path, so we can proceed
     -- with parsing as if it had been a normal path all along.
-    { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
+    url
         |> Parser.parse parser
 
 
@@ -53,7 +59,7 @@ fromUrl url =
 
 routeToString : Page -> String
 routeToString page =
-    "#/" ++ String.join "/" (routeToPieces page)
+    Url.Builder.absolute (routeToPieces page) []
 
 
 routeToPieces : Page -> List String
@@ -63,4 +69,4 @@ routeToPieces page =
             []
 
         Tab name ->
-            [ "info", name ]
+            [ "info", Url.percentEncode name ]

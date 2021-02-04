@@ -1,0 +1,18 @@
+set -eu
+
+i=0
+landscape=0
+portrait=0
+
+while true; do
+
+    if [ $(($(identify -ping -format '%W/%H>=1' $i.jpeg))) -eq 1 ]; then
+        cp $i.jpeg landscape/$landscape.jpeg
+        landscape=$((landscape+1))
+    else
+        cp $i.jpeg portrait/$portrait.jpeg
+        portrait=$((portrait+1))
+    fi
+    i=$((i+1))
+
+done

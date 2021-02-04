@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "strict": true,
-        "module": "es2020",
+        "module": "commonjs",
         "lib": [
             "ES2015",
             "ES2018",
@@ -13,6 +13,7 @@
         "allowUmdGlobalAccess": true,
     },
     "exclude": [
-        "**/node_modules/**"
+        "**/node_modules/**",
+        "elm-ts-interop/**"
     ]
 }

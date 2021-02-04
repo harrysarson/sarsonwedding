@@ -5,6 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Browser.Navigation
+import Dict
 import Element as E exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -15,7 +16,7 @@ import Element.Region as Region
 import GeneratedPorts
 import Html.Attributes
 import Html.Events
-import InteropDefinitions exposing (Flags)
+import InteropDefinitions
 import Json.Decode
 import Lib.InitApp
 import Route exposing (Page)
@@ -103,12 +104,23 @@ update msg model =
                     , Browser.Navigation.load href
                     )
 
-        ( ChangedUrl url, _ ) ->
-            changeRouteTo (Route.fromUrl url) model
+        ( ChangedUrl _, _ ) ->
+            ( model, Cmd.none )
 
         ( ClickedPage page, { gui } ) ->
             ( { model | page = page, gui = { gui | navDropDown = False } }
-            , Cmd.none
+            , Route.pushUrl
+                model.key
+                (case page of
+                    Home ->
+                        Route.Home
+
+                    Tab { name } ->
+                        Route.Tab name
+
+                    NotFound ->
+                        Route.Home
+                )
             )
 
         ( Resize width height, _ ) ->
@@ -122,109 +134,11 @@ update msg model =
             )
 
 
-
--- ( GotProfileMsg subMsg, Profile username profile ) ->
---     Profile.update subMsg profile
---         |> updateWith (Profile username) GotProfileMsg model
--- ( GotArticleMsg subMsg, Article article ) ->
---     Article.update subMsg article
---         |> updateWith Article GotArticleMsg model
--- ( GotEditorMsg subMsg, Editor slug editor ) ->
---     Editor.update subMsg editor
---         |> updateWith (Editor slug) GotEditorMsg model
--- ( GotSession session, Redirect _ ) ->
---     ( Redirect session
---     , Route.replaceUrl (Session.navKey session) Route.Home
---     )
--- ( _, _ ) ->
---     -- Disregard messages that arrived for the wrong page.
---     ( model, Cmd.none )
-
-
-updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
-updateWith toModel toMsg model ( subModel, subCmd ) =
-    ( toModel subModel
-    , Cmd.map toMsg subCmd
-    )
-
-
 extractViewport : Browser.Dom.Viewport -> ViewportSize
 extractViewport { viewport } =
     { width = round viewport.width
     , height = round viewport.height
     }
-
-
-px : Int -> String
-px value =
-    String.fromInt value ++ "px"
-
-
-
--- getImageUrl : Content.WelshPlaces.Place -> Flags -> String
--- getImageUrl place imageUrls =
---     case place of
---         Content.WelshPlaces.Llandovery ->
---             imageUrls.llandovery
---         Content.WelshPlaces.Aberaeron ->
---             imageUrls.aberaeron
---         Content.WelshPlaces.Aberystwyth ->
---             imageUrls.aberystwyth
---         Content.WelshPlaces.Llandudno ->
---             imageUrls.llandudno
---         Content.WelshPlaces.Rhyl ->
---             imageUrls.rhyl
---         Content.WelshPlaces.Bala ->
---             imageUrls.bala
---         Content.WelshPlaces.BetwsyCoed ->
---             imageUrls.betwsyCoed
---         Content.WelshPlaces.Caernarfon ->
---             imageUrls.caernarfon
---         Content.WelshPlaces.Cardiff ->
---             imageUrls.cardiff
---         Content.WelshPlaces.Pwllheli ->
---             imageUrls.pwllheli
---         Content.WelshPlaces.Tywyn ->
---             imageUrls.tywyn
---         Content.WelshPlaces.MerthyrTydfil ->
---             imageUrls.merthyrTydfil
---         Content.WelshPlaces.Abergavenny ->
---             imageUrls.abergavenny
---         Content.WelshPlaces.Manorbier ->
---             imageUrls.manorbier
---         Content.WelshPlaces.PistyllRhaeadr ->
---             imageUrls.pistyllRhaeadr
---         Content.WelshPlaces.Portmeirion ->
---             imageUrls.portmeirion
---         Content.WelshPlaces.Rhossili ->
---             imageUrls.rhossili
---         Content.WelshPlaces.YsbytyCynfyn ->
---             imageUrls.ysbytyCynfyn
---         Content.WelshPlaces.Llanfairpwllgwyngyll ->
---             imageUrls.llanfairpwllgwyngyll
---         Content.WelshPlaces.Llangefni ->
---             imageUrls.llangefni
---         Content.WelshPlaces.Kidwelly ->
---             imageUrls.kidwelly
---         Content.WelshPlaces.Laugharne ->
---             imageUrls.laugharne
---         Content.WelshPlaces.Lampeter ->
---             imageUrls.lampeter
---         Content.WelshPlaces.Llandysul ->
---             imageUrls.llandysul
---         Content.WelshPlaces.Llanrwst ->
---             imageUrls.llanrwst
---         Content.WelshPlaces.Denbigh ->
---             imageUrls.denbigh
---         Content.WelshPlaces.Prestatyn ->
---             imageUrls.prestatyn
---         Content.WelshPlaces.Nefyn ->
---             imageUrls.nefyn
-
-
-focusInput : Task.Task Browser.Dom.Error ()
-focusInput =
-    Browser.Dom.focus "wales-place-input"
 
 
 changeRouteTo : Maybe Route.Page -> Model -> ( Model, Cmd Msg )
@@ -241,6 +155,30 @@ changeRouteTo maybeRoute model =
             )
 
         Just (Route.Tab name) ->
-            ( { model | page = Tab name }
-            , Cmd.none
-            )
+            case model.static.pages |> Dict.get name of
+                Just page ->
+                    let
+                        index_ =
+                            case model.page of
+                                Tab { index } ->
+                                    index
+
+                                _ ->
+                                    -- TODO(harry): pick a better index here
+                                    0
+                    in
+                    ( { model
+                        | page =
+                            Tab
+                                { index = index_
+                                , name = name
+                                , text = page.text
+                                }
+                      }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( { model | page = NotFound }
+                    , Cmd.none
+                    )

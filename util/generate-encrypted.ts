@@ -1,7 +1,7 @@
 import {promises as fs} from 'fs';
 // @ts-ignore
 import {webcrypto} from 'crypto';
-import {TextDecoder, TextEncoder} from 'util';
+import {TextEncoder} from 'util';
 
 import marked from 'marked';
 
@@ -26,12 +26,8 @@ async function sha256sum(message: string): Promise<string> {
 
 const plainText = JSON.stringify({
 	...secret,
-	pages: secret.pages.map(({name, text}) => ({name, text: marked(text)})),
+	pages: secret.pages,
 });
-
-// function encodeBytes(bytes: ArrayBuffer): string {
-// 	return base64url.toBase64(base64url(String.fromCharCode(...new Uint8Array(bytes))));
-// }
 
 function my_btoa(str: string): string {
 	const buffer = Buffer.from(str.toString(), 'binary');
@@ -40,14 +36,6 @@ function my_btoa(str: string): string {
 
 function encodeBytesAsBase64(bytes: ArrayBuffer): string {
 	return my_btoa(String.fromCharCode(...new Uint8Array(bytes)));
-}
-
-function my_atob(str: string): string {
-	return Buffer.from(str, 'base64').toString('binary');
-}
-
-function decodeBytesFromBase64(encoded: string): ArrayBuffer {
-	return Uint8Array.from(my_atob(encoded), (c) => c.charCodeAt(0));
 }
 
 async function main() {

@@ -2,6 +2,7 @@ module View exposing (view)
 
 import Array
 import Browser
+import Dict
 import Element as E exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -9,8 +10,13 @@ import Element.Events as Events
 import Element.Font as Font
 import Element.Input as Input
 import Element.Region as Region
+import Html
 import Html.Attributes
-import InteropDefinitions exposing (Flags)
+import Html.Events
+import Json.Decode
+import Markdown.Html
+import Markdown.Parser
+import Markdown.Renderer
 import Route exposing (Page)
 import Types exposing (..)
 
@@ -22,7 +28,7 @@ padding =
 
 baseFont : Int
 baseFont =
-    16
+    18
 
 
 bannerSize =
@@ -32,6 +38,7 @@ bannerSize =
 colors =
     { navy = E.rgb255 0x0D 0x16 0x2D
     , white = E.rgb 1 1 1
+    , black = E.rgb 0 0 0
     , grey = E.rgb 0.6 0.6 0.6
     , lightGrey = E.rgb 0.95 0.95 0.95
     , pink = E.rgb255 245 169 173
@@ -68,8 +75,7 @@ header model =
         navs =
             ("home"
                 :: (model.static.pages
-                        |> Array.map (\{ name } -> name)
-                        |> Array.toList
+                        |> Dict.keys
                    )
             )
                 |> List.map String.toUpper
@@ -99,9 +105,8 @@ header model =
 
                 fontSize =
                     baseFont * 3
-            in
-            bannerBar
-                (if model.gui.navDropDown then
+
+                dropDown =
                     [ E.below
                         (E.column
                             [ E.width E.fill
@@ -111,12 +116,26 @@ header model =
                             ]
                             (navRowFor "HOME" Home False
                                 :: (model.static.pages
-                                        |> Array.map (\{ name } -> navRowFor (String.toUpper name) (Tab name) True)
-                                        |> Array.toList
+                                        |> Dict.toList
+                                        |> List.indexedMap
+                                            (\index ( name, { text } ) ->
+                                                navRowFor (String.toUpper name)
+                                                    (Tab
+                                                        { index = index + 1
+                                                        , name = name
+                                                        , text = text
+                                                        }
+                                                    )
+                                                    True
+                                            )
                                    )
                             )
                         )
                     ]
+            in
+            bannerBar
+                (if model.gui.navDropDown then
+                    dropDown
 
                  else
                     []
@@ -152,7 +171,7 @@ footer model =
     in
     bannerBar
         []
-        (E.el
+        (E.link
             [ E.centerX
             , E.centerY
             , Font.size (baseFont * 2)
@@ -160,10 +179,8 @@ footer model =
             , E.pointer
             , E.mouseOver
                 [ Font.color colors.pink ]
-
-            -- TODO(harry) : make it a link
             ]
-            (E.text "Please RSVP")
+            { url = model.static.rsvpUrl, label = E.text "Please RSVP" }
         )
 
 
@@ -214,6 +231,69 @@ home =
         ]
 
 
+tab : Model -> { index : Int, name : String, text : String } -> E.Element Msg
+tab model page =
+    let
+        nameAttrs =
+            [ E.centerX
+            , Font.size (baseFont * 3)
+            ]
+    in
+    E.column
+        [ E.width E.fill
+        , E.padding (baseFont * 5)
+        , E.spacing (baseFont * 3)
+        ]
+        [ E.el
+            [ E.centerX
+            , E.spacing baseFont
+            , Region.heading 1
+            , Font.size (baseFont * 3)
+            ]
+            (E.text page.name)
+        , case model.static.images.sarsonsToBe.portrait |> Array.get page.index of
+            Just url ->
+                E.image
+                    [ E.centerX
+                    , E.width (baseFont * 20 |> E.px)
+                    , Border.shadow defaultShadow
+                    , E.htmlAttribute (Html.Attributes.class "detect-load")
+                    ]
+                    { src = url
+                    , description = "Harry and Sophie, in love."
+                    }
+
+            Nothing ->
+                E.none
+        , E.el
+            [ E.width E.fill
+            , E.padding (padding * 3)
+            , E.spacing (padding * 3)
+            , Border.shadow defaultShadow
+            , Background.color colors.white
+            , Font.color colors.black
+            ]
+            (let
+                res =
+                    page.text
+                        |> Markdown.Parser.parse
+                        |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
+                        |> Result.andThen (Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer)
+             in
+             case res of
+                Ok rendered ->
+                    E.paragraph
+                        [ E.spacing 30
+                        , E.padding 50
+                        ]
+                        (rendered |> List.map E.html)
+
+                Err errors ->
+                    E.text errors
+            )
+        ]
+
+
 body : Model -> Element Msg
 body model =
     E.column
@@ -230,13 +310,14 @@ body model =
         , E.el
             [ E.height E.fill
             , E.width E.fill
+            , E.scrollbarY
             ]
             (case model.page of
                 Home ->
                     home
 
-                Tab name ->
-                    E.text name
+                Tab page ->
+                    tab model page
 
                 NotFound ->
                     E.text "sorry we cannot find that page"

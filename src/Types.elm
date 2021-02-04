@@ -1,9 +1,25 @@
 module Types exposing (..)
 
+import Array exposing (Array)
 import Browser
 import Browser.Navigation
-import InteropDefinitions exposing (Flags)
+import Dict exposing (Dict)
+import Element
+import Json.Decode
 import Url
+
+
+type alias Flags =
+    { pages : Dict String { text : String }
+    , images :
+        { invite : String
+        , sarsonsToBe :
+            { portrait : Array String
+            , landscape : Array String
+            }
+        }
+    , rsvpUrl : String
+    }
 
 
 type alias ViewportSize =
@@ -15,7 +31,7 @@ type alias ViewportSize =
 type Page
     = Home
     | NotFound
-    | Tab String
+    | Tab { index : Int, name : String, text : String }
 
 
 type alias Model =
