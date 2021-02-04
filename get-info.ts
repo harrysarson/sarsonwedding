@@ -1,5 +1,5 @@
 import {salt, iv, cypherText} from './encrypted';
-import {getKey, getKeyMaterial, Info, WANTED_HASH2} from './util/shared';
+import {getKey, getKeyMaterial, Info, json_parse, WANTED_HASH2} from './util/shared';
 
 function buf2hex(buffer: ArrayBuffer): string {
 	return Array.prototype.map
@@ -42,7 +42,7 @@ export const getInfo = async (key: CryptoKey): Promise<Info> => {
 		key,
 		decodeBytesFromBase64(cypherText)
 	);
-	return JSON.parse(new TextDecoder().decode(decrypted));
+	return json_parse(new TextDecoder().decode(decrypted), Info);
 };
 
 function decodeBytesFromBase64(encoded: string): ArrayBuffer {

@@ -1,3 +1,7 @@
+import * as D from 'io-ts/Decoder';
+import {pipe} from 'fp-ts/function';
+import {fold} from 'fp-ts/Either';
+
 const my_crypto: Crypto = (() => {
 	if (typeof window === 'undefined') {
 		return require('crypto').webcrypto;
@@ -8,10 +12,12 @@ const my_crypto: Crypto = (() => {
 
 export const WANTED_HASH2 = '437f1fcfc1347fab43f0ac82d6403e7e121fd96ad6016a48a754257154d1afd8';
 
-export type Info = {
-	pages: Array<{name: string; text: string}>;
-	rsvpUrl: string;
-};
+export const Info = D.type({
+	pages: D.array(D.type({name: D.string, text: D.string})),
+	rsvpUrl: D.string,
+});
+
+export type Info = D.TypeOf<typeof Info>;
 
 function getParams(salt: Uint8Array): Pbkdf2Params {
 	return {
@@ -37,5 +43,23 @@ export function getKeyMaterial(password: string): Promise<CryptoKey> {
 		{name: 'PBKDF2'},
 		false,
 		['deriveBits', 'deriveKey']
+	);
+}
+
+function json_parse_unsafe(s: string): unknown {
+	return JSON.parse(s);
+}
+
+export function json_parse<T>(s: string, d: D.Decoder<unknown, T>): T {
+	return pipe(
+		d.decode(json_parse_unsafe(s)),
+		fold(
+			// failure handler
+			(errors) => {
+				throw new Error(D.draw(errors));
+			},
+			// success handler
+			(a) => a
+		)
 	);
 }
