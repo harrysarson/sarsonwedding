@@ -3,8 +3,8 @@ port module GeneratedPorts exposing (decodeFlags, fromElm, toElm)
 import InteropDefinitions
 import Json.Decode
 import Json.Encode
-import TsInterop.Decode as Decode
-import TsInterop.Encode as Encode
+import TsJson.Decode as Decode
+import TsJson.Encode as Encode
 
 
 

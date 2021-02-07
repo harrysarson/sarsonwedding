@@ -255,8 +255,8 @@ footer model =
         )
 
 
-home : Element Msg
-home =
+home : Model -> Element Msg
+home model =
     let
         nameAttrs =
             [ E.centerX
@@ -283,22 +283,32 @@ home =
             ]
             (E.text "5th June 2021")
         , E.el
-            [ E.width E.fill
+            [ E.width (E.maximum maxContentWidth E.fill)
             , E.padding (padding * 3)
             , E.spacing (padding * 3)
+            , E.centerX
             , Border.shadow defaultShadow
             , Background.color colors.navy
             , Font.color colors.white
             ]
-            (E.column
-                []
-                [ E.el
-                    [ Region.heading 2
-                    , Font.size (baseFont * 2)
+            (E.table
+                [ E.spacing baseFont ]
+                { data = model.static.schedule
+                , columns =
+                    [ { header = E.text "Schedule"
+                      , width = fill
+                      , view =
+                            \{ time } ->
+                                E.text time
+                      }
+                    , { header = E.none
+                      , width = fill
+                      , view =
+                            \{ text } ->
+                                E.text text
+                      }
                     ]
-                    (E.text "Schedule")
-                , E.paragraph [ Font.size (baseFont * 2) ] [ E.text "- first thing" ]
-                ]
+                }
             )
         ]
 
@@ -454,7 +464,7 @@ body model =
             ]
             (case model.page of
                 Home ->
-                    home
+                    home model
 
                 Tab page ->
                     tab model page

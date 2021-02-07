@@ -2,10 +2,8 @@ module InteropDefinitions exposing (FromElm(..), ToElm, interop)
 
 import Array exposing (Array)
 import Dict exposing (Dict)
-import Json.Decode as JD
-import Json.Encode as JE
-import TsInterop.Decode as Decode exposing (Decoder)
-import TsInterop.Encode as Encoder exposing (Encoder, optional, required)
+import TsJson.Decode as Decode exposing (Decoder)
+import TsJson.Encode as Encoder exposing (Encoder, required)
 import Types exposing (Flags)
 
 
@@ -44,23 +42,31 @@ fromElm =
 
 flags : Decode.Decoder Flags
 flags =
-    Decode.map3
-        (\pages images_ rsvpUrl ->
-            { pages = pages, images = images_, rsvpUrl = rsvpUrl }
+    Decode.map4
+        (\pages images_ rsvpUrl schedule ->
+            { pages = pages, images = images_, rsvpUrl = rsvpUrl, schedule = schedule }
         )
         (Decode.field "pages" (Decode.dict page))
         (Decode.field "images" images)
         (Decode.field "rsvpUrl" Decode.string)
+        (Decode.field "schedule" (Decode.list scheduleRow))
 
 
 page : Decode.Decoder { text : String }
 page =
     Decode.map
-        {- 2 -}
-        (\{- name -} text ->
-            { {- name = name, -} text = text }
+        (\text -> { text = text })
+        (Decode.field "text" Decode.string)
+
+
+scheduleRow : Decode.Decoder { time : String, text : String }
+scheduleRow =
+    Decode.map2
+        (\time text ->
+            { time = time, text = text }
         )
-        {- (Decode.field "name" Decode.string) -} (Decode.field "text" Decode.string)
+        (Decode.field "time" Decode.string)
+        (Decode.field "text" Decode.string)
 
 
 images :

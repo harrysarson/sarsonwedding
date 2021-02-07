@@ -4,8 +4,6 @@ import Array exposing (Array)
 import Browser
 import Browser.Navigation
 import Dict exposing (Dict)
-import Element
-import Json.Decode
 import Url
 
 
@@ -19,6 +17,11 @@ type alias Flags =
             }
         }
     , rsvpUrl : String
+    , schedule :
+        List
+            { time : String
+            , text : String
+            }
     }
 
 

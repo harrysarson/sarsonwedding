@@ -64,6 +64,7 @@ async function loadApp(key: CryptoKey) {
 		flags: {
 			pages,
 			rsvpUrl: info.rsvpUrl,
+			schedule: info.schedule,
 			images: {
 				invite,
 				sarsonsToBe: {
