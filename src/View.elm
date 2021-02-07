@@ -176,7 +176,7 @@ header model =
                     buttonSize * 4
 
                 els =
-                    floor (toFloat model.dims.width / toFloat (Debug.log "w" linkWidth + buttonSize) - 0.5)
+                    floor (toFloat model.dims.width / toFloat (linkWidth + buttonSize) - 0.5)
             in
             bannerBar
                 (if model.gui.navDropDown then
