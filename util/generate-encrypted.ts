@@ -3,8 +3,6 @@ import {promises as fs} from 'fs';
 import {webcrypto} from 'crypto';
 import {TextEncoder} from 'util';
 
-import marked from 'marked';
-
 import {getKey, getKeyMaterial, WANTED_HASH2} from './shared';
 import secret from './secret';
 import assert from 'assert';

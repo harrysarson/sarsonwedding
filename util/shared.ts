@@ -2,11 +2,19 @@ import * as D from 'io-ts/Decoder';
 import {pipe} from 'fp-ts/function';
 import {fold} from 'fp-ts/Either';
 
-const my_crypto: Crypto = (() => {
+export const my_crypto: Crypto = (() => {
 	if (typeof window === 'undefined') {
 		return require('crypto').webcrypto;
 	} else {
 		return window.crypto;
+	}
+})();
+
+export const my_atob = (() => {
+	if (typeof window === 'undefined') {
+		return (str: string) => Buffer.from(str, 'base64').toString('binary');
+	} else {
+		return window.atob;
 	}
 })();
 

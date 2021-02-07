@@ -62,8 +62,11 @@ preInit _ _ _ =
 postInit : ViewportSize -> Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
 postInit viewport flags url key =
     case flags |> GeneratedPorts.decodeFlags of
-        Err flagsError ->
-            Debug.todo <| Json.Decode.errorToString flagsError
+        Err _ ->
+            -- Crash the stack, ts interop + runtime checking of json confirms
+            -- we cannot hit this.
+            (\() -> postInit viewport flags url key)
+                ()
 
         Ok decodedFlags ->
             changeRouteTo

@@ -1,5 +1,13 @@
 import {salt, iv, cypherText} from './encrypted';
-import {getKey, getKeyMaterial, Info, json_parse, WANTED_HASH2} from './util/shared';
+import {
+	getKey,
+	getKeyMaterial,
+	Info,
+	json_parse,
+	my_atob,
+	my_crypto,
+	WANTED_HASH2,
+} from './util/shared';
 
 function buf2hex(buffer: ArrayBuffer): string {
 	return Array.prototype.map
@@ -10,7 +18,7 @@ function buf2hex(buffer: ArrayBuffer): string {
 async function sha256sum(message: string): Promise<string> {
 	const encoder = new TextEncoder();
 	const data = encoder.encode(message);
-	const hash = await crypto.subtle.digest('SHA-256', data);
+	const hash = await my_crypto.subtle.digest('SHA-256', data);
 	return buf2hex(hash);
 }
 
@@ -34,7 +42,7 @@ export const tryCache = async () => {
 };
 
 export const getInfo = async (key: CryptoKey): Promise<Info> => {
-	const decrypted = await window.crypto.subtle.decrypt(
+	const decrypted = await my_crypto.subtle.decrypt(
 		{
 			name: 'AES-GCM',
 			iv,
@@ -46,5 +54,5 @@ export const getInfo = async (key: CryptoKey): Promise<Info> => {
 };
 
 function decodeBytesFromBase64(encoded: string): ArrayBuffer {
-	return Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0));
+	return Uint8Array.from(my_atob(encoded), (c) => c.charCodeAt(0));
 }

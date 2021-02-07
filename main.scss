@@ -4,6 +4,8 @@ $colors: (
 	navy: #0d162d,
 	invite-navy: rgb(29, 43, 80),
 	pink: rgb(245, 169, 173),
+	strongpink: #a93864,
+	darkpink: #532b59,
 	green: rgb(118, 141, 125),
 );
 
@@ -38,6 +40,15 @@ body {
 	input,
 	button {
 		height: 2.3em;
+	}
+}
+
+a {
+	color: map-get($colors, darkpink);
+	font-weight: bold;
+	text-decoration: none;
+	&:hover {
+		color: map-get($colors, strongpink);
 	}
 }
 
