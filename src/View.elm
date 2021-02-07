@@ -382,6 +382,58 @@ tab model page =
         ]
 
 
+notFound : Model -> E.Element Msg
+notFound model =
+    E.column
+        [ E.width E.fill
+        , E.paddingEach
+            { bottom = baseFont * 3
+            , left = baseFont
+            , right = baseFont
+            , top = baseFont * 3
+            }
+        , E.spacing (baseFont * 3)
+        ]
+        [ E.el
+            [ E.spacing baseFont
+            , E.width (E.maximum maxContentWidth E.fill)
+            , E.centerX
+            , Region.heading 1
+            , Font.size (baseFont * 3)
+            ]
+            (E.text "Page not found")
+        , case model.static.images.sarsonsToBe.portrait |> Array.get 12 of
+            Just url ->
+                E.image
+                    [ E.centerX
+                    , E.width (E.maximum maxContentWidth E.fill)
+                    , Border.shadow defaultShadow
+                    , E.htmlAttribute (Html.Attributes.class "detect-load")
+                    ]
+                    { src = url
+                    , description = "Harry and Sophie, in love."
+                    }
+
+            Nothing ->
+                E.none
+        , E.el
+            [ E.width (E.maximum maxContentWidth E.fill)
+            , E.padding (padding * 3)
+            , E.spacing (padding * 3)
+            , E.centerX
+            , Border.shadow defaultShadow
+            , Background.color colors.white
+            , Font.color colors.navy
+            ]
+            (E.paragraph
+                [ E.spacing 10
+                , E.padding 10
+                ]
+                [ E.text "Sorry, this page does not exist." ]
+            )
+        ]
+
+
 body : Model -> Element Msg
 body model =
     E.column
@@ -408,7 +460,7 @@ body model =
                     tab model page
 
                 NotFound ->
-                    E.text "sorry we cannot find that page"
+                    notFound model
             )
         , footer model
         ]
