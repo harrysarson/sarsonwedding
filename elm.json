@@ -1,12 +1,13 @@
 {
     "type": "package",
-    "name": "dillonkearns/elm-ts-interop",
+    "name": "dillonkearns/elm-ts-json",
     "summary": "Keep your TypeScript type definitions in sync with your ports.",
     "license": "BSD-3-Clause",
     "version": "1.0.0",
     "exposed-modules": [
-        "TsInterop.Encode",
-        "TsInterop.Decode"
+        "TsJson.Encode",
+        "TsJson.Decode",
+        "TsJson.Type"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
