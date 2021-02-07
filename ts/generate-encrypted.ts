@@ -9,6 +9,17 @@ import assert from 'assert';
 
 const crypto: Crypto = webcrypto;
 
+const hash = process.argv[2];
+const outFile = process.argv[3];
+
+if (hash === undefined) {
+	throw new Error('You must supply an hash to use as encryption password.');
+}
+
+if (outFile === undefined) {
+	throw new Error('You must supply an outfile to write encrypted ts module to.');
+}
+
 function buf2hex(buffer: ArrayBuffer): string {
 	return Array.prototype.map
 		.call(new Uint8Array(buffer), (x) => ('00' + x.toString(16)).slice(-2))
@@ -41,7 +52,6 @@ async function main() {
 	const iv = crypto.getRandomValues(new Uint8Array(12));
 
 	const cypherText = await (async () => {
-		const hash = process.argv[2];
 		assert.strictEqual(await sha256sum(hash), WANTED_HASH2);
 		let keyMaterial = await getKeyMaterial(hash);
 		let key = await getKey(keyMaterial, salt);
@@ -58,7 +68,7 @@ async function main() {
 	})();
 
 	fs.writeFile(
-		'encrypted.ts',
+		outFile,
 		`
 
 export const salt = Uint8Array.from([
