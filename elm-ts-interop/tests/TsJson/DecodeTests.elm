@@ -1,11 +1,12 @@
-module TsInterop.DecodeTests exposing (suite)
+module TsJson.DecodeTests exposing (suite)
 
 import Array
 import Expect exposing (Expectation)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Test exposing (..)
-import TsInterop.Decode exposing (..)
+import TsJson.Decode exposing (..)
+import TsType
 
 
 suite : Test
@@ -205,3 +206,8 @@ expectDecodeError expect interop =
                         Expect.fail <| "Expected decode failure, but got " ++ Debug.toString value
             , \_ -> tsTypeToString interop |> Expect.equal expect.typeDef
             ]
+
+
+tsTypeToString : Decoder value -> String
+tsTypeToString tsDecoder =
+    tsDecoder |> tsType |> TsType.toString
