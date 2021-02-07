@@ -1,13 +1,5 @@
 import {salt, iv, cypherText} from './encrypted';
-import {
-	getKey,
-	getKeyMaterial,
-	Info,
-	json_parse,
-	my_atob,
-	my_crypto,
-	WANTED_HASH2,
-} from './util/shared';
+import {getKey, getKeyMaterial, Info, json_parse, my_atob, my_crypto, WANTED_HASH2} from './shared';
 
 function buf2hex(buffer: ArrayBuffer): string {
 	return Array.prototype.map
