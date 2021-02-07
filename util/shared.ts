@@ -14,7 +14,7 @@ export const my_atob = (() => {
 	if (typeof window === 'undefined') {
 		return (str: string) => Buffer.from(str, 'base64').toString('binary');
 	} else {
-		return window.atob;
+		return (str: string) => window.atob(str);
 	}
 })();
 
