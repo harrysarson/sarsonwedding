@@ -16,6 +16,9 @@ jobs:
         run: |
           npm ci
           npm run build
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PASSWORD_HASH: ${{ secrets.PASSWORD_HASH }}
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.7.1
