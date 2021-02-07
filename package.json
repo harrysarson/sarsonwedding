@@ -1,8 +1,8 @@
 {
 	"scripts": {
-		"build": "elm-ts-interop --entrypoint Main --output src/Main/index.d.ts && parcel build index.html 404.html info/404.html",
+		"build": "elm-ts-interop --entrypoint Main --output src/Main/index.d.ts && parcel build index.html 404.html",
 		"autogen": "ts-node util/generate-encrypted $PASSWORD_HASH",
-		"start": "parcel index.html info/404.html",
+		"start": "parcel index.html 404.html",
 		"test": "ava"
 	},
 	"devDependencies": {
