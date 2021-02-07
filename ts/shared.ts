@@ -23,6 +23,7 @@ export const WANTED_HASH2 = '437f1fcfc1347fab43f0ac82d6403e7e121fd96ad6016a48a75
 export const Info = D.type({
 	pages: D.array(D.type({name: D.string, text: D.string})),
 	rsvpUrl: D.string,
+	schedule: D.array(D.type({time: D.string, text: D.string})),
 });
 
 export type Info = D.TypeOf<typeof Info>;
