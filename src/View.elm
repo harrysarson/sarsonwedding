@@ -255,6 +255,25 @@ footer model =
         )
 
 
+homeOrTab : List (Attribute msg) -> List (Element msg) -> Element msg
+homeOrTab attr els =
+    E.column
+        (List.concat
+            [ [ E.width E.fill
+              , E.paddingEach
+                    { bottom = baseFont * 3
+                    , left = baseFont
+                    , right = baseFont
+                    , top = baseFont * 3
+                    }
+              , E.spacing (baseFont * 3)
+              ]
+            , attr
+            ]
+        )
+        els
+
+
 home : Model -> Element Msg
 home model =
     let
@@ -264,11 +283,8 @@ home model =
             , fonts.posh
             ]
     in
-    E.column
-        [ E.width E.fill
-        , E.padding (baseFont * 5)
-        , E.spacing (baseFont * 3)
-        ]
+    homeOrTab
+        []
         [ E.column
             [ E.centerX
             , E.spacing baseFont
@@ -292,7 +308,9 @@ home model =
             , Font.color colors.white
             ]
             (E.table
-                [ E.spacing baseFont ]
+                [ E.spacing baseFont
+                , Font.size baseFont
+                ]
                 { data = model.static.schedule
                 , columns =
                     [ { header = E.text "Schedule"
@@ -315,16 +333,8 @@ home model =
 
 tab : Model -> { index : Int, name : String, text : String } -> E.Element Msg
 tab model page =
-    E.column
-        [ E.width E.fill
-        , E.paddingEach
-            { bottom = baseFont * 3
-            , left = baseFont
-            , right = baseFont
-            , top = baseFont * 3
-            }
-        , E.spacing (baseFont * 3)
-        ]
+    homeOrTab
+        []
         [ E.el
             [ E.spacing baseFont
             , E.width (E.maximum maxContentWidth E.fill)

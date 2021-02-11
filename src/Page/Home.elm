@@ -16,7 +16,8 @@ import Url.Builder
 -- MODEL
 
 
-type alias Model = ()
+type alias Model =
+    ()
 
 
 init : Session -> ( Model, Cmd Msg )
