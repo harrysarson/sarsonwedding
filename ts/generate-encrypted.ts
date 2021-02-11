@@ -2,10 +2,12 @@ import {promises as fs} from 'fs';
 // @ts-ignore
 import {webcrypto} from 'crypto';
 import {TextEncoder} from 'util';
+import assert from 'assert';
 
 import {getKey, getKeyMaterial, WANTED_HASH2} from './shared';
+
+// @ts-ignore
 import secret from './secret';
-import assert from 'assert';
 
 const crypto: Crypto = webcrypto;
 

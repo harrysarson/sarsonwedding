@@ -1,9 +1,10 @@
 {
 	"scripts": {
-		"build": "elm-ts-interop --entrypoint Main --output src/Main/index.d.ts && parcel build index.html 404.html",
+		"configure": "elm-ts-interop --entrypoint Main --output src/Main/index.d.ts",
+		"build": "npm run configure && parcel build index.html 404.html",
 		"autogen": "ts-node ts/generate-encrypted $PASSWORD_HASH ./ts/encrypted.ts",
 		"start": "parcel index.html",
-		"test": "tsc --noEmit -p . && ava"
+		"test": "npm run configure && tsc --noEmit -p . && ava"
 	},
 	"devDependencies": {
 		"@incrementalelm/elm-ts-interop-pro": "0.0.11",
