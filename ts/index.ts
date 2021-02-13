@@ -53,8 +53,6 @@ async function checkAndLoadApp(password: string) {
 }
 
 async function loadApp(key: CryptoKey) {
-	document.querySelector('#login')?.setAttribute('hidden', '');
-	document.querySelector('#app')?.removeAttribute('hidden');
 	const info = await getInfo(key);
 	const pages: {[name: string]: {text: string}} = {};
 	for (const {name, text} of info.pages) {
@@ -138,6 +136,8 @@ async function init() {
 	const key = await tryCache();
 	if (key !== null) {
 		loadApp(key);
+	} else {
+		document.querySelector('#login')?.removeAttribute('hidden');
 	}
 }
 
