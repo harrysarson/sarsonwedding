@@ -251,6 +251,15 @@ footer model =
                 ]
                 E.none
             )
+        , E.inFront
+            (E.el
+                [ Background.color (E.rgba 0 0 0 0)
+                , E.width (50 |> E.px)
+                , E.height (bannerSize |> E.px)
+                , Events.onClick ToggleEaster
+                ]
+                E.none
+            )
         ]
         (E.link
             [ E.centerX
@@ -300,14 +309,18 @@ home model =
             , E.spacing baseFont
             ]
             [ E.el nameAttrs (E.text "Harry Sarson")
-            , E.el [ E.centerX ] (E.text "and")
+            , E.el
+                [ E.centerX
+                , Font.size (baseFont * 2)
+                ]
+                (E.text "and")
             , E.el nameAttrs (E.text "Sophie Burke")
             ]
         , E.el
             [ E.centerX
             , Font.size (baseFont * 2)
             ]
-            (E.text "5th June 2021")
+            (E.text "Saturday 5th June 2021")
         , E.el
             [ E.width (E.maximum maxContentWidth E.fill)
             , E.padding (padding * 3)
@@ -395,20 +408,37 @@ tab model page =
                 Err errors ->
                     E.text errors
             )
-        , case model.static.images.sarsonsToBe.landscape |> Array.get page.index of
-            Just url ->
-                E.image
-                    [ E.centerX
-                    , E.width (E.maximum maxContentWidth E.fill)
-                    , Border.shadow defaultShadow
-                    , E.htmlAttribute (Html.Attributes.class "detect-load")
-                    ]
-                    { src = url
-                    , description = "Harry and Sophie, in love."
-                    }
+        , if model.gui.easter == 3 then
+            E.el
+                [ E.centerX
+                , E.width (maxContentWidth |> E.px)
+                ]
+                (E.html
+                    (Html.iframe
+                        [ Html.Attributes.width maxContentWidth
+                        , Html.Attributes.id "focus-me"
+                        , Html.Attributes.height (maxContentWidth // 2)
+                        , Html.Attributes.src "https://harrysarson.github.io/tank/"
+                        ]
+                        []
+                    )
+                )
 
-            Nothing ->
-                E.none
+          else
+            case model.static.images.sarsonsToBe.landscape |> Array.get page.index of
+                Just url ->
+                    E.image
+                        [ E.centerX
+                        , E.width (E.maximum maxContentWidth E.fill)
+                        , Border.shadow defaultShadow
+                        , E.htmlAttribute (Html.Attributes.class "detect-load")
+                        ]
+                        { src = url
+                        , description = "Harry and Sophie, in love."
+                        }
+
+                Nothing ->
+                    E.none
         ]
 
 

@@ -52,7 +52,11 @@ type Msg
     | ChangedUrl Url.Url
     | Resize Int Int
     | ToggleNavDropDown
+    | ToggleEaster
+    | NoOp
 
 
 type alias Gui =
-    { navDropDown : Bool }
+    { navDropDown : Bool
+    , easter : Int
+    }

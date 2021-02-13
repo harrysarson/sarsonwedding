@@ -1,27 +1,15 @@
 module Main exposing (main)
 
-import Array
+import Bitwise
 import Browser
 import Browser.Dom
 import Browser.Events
 import Browser.Navigation
 import Dict
-import Element as E exposing (..)
-import Element.Background as Background
-import Element.Border as Border
-import Element.Events as Events
-import Element.Font as Font
-import Element.Input as Input
-import Element.Region as Region
 import GeneratedPorts
-import Html.Attributes
-import Html.Events
-import InteropDefinitions
 import Json.Decode
 import Lib.InitApp
-import Route exposing (Page)
-import Svg
-import Svg.Attributes
+import Route
 import Task
 import Types exposing (..)
 import Url
@@ -42,7 +30,7 @@ main =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.batch
         [ Browser.Events.onResize Resize ]
 
@@ -75,7 +63,7 @@ postInit viewport flags url key =
                 , static = decodedFlags
                 , key = key
                 , dims = viewport
-                , gui = { navDropDown = False }
+                , gui = { navDropDown = False, easter = 0 }
                 }
 
 
@@ -112,18 +100,21 @@ update msg model =
 
         ( ClickedPage page, { gui } ) ->
             ( { model | page = page, gui = { gui | navDropDown = False } }
-            , Route.pushUrl
-                model.key
-                (case page of
-                    Home ->
-                        Route.Home
+            , Cmd.batch
+                [ Route.pushUrl
+                    model.key
+                    (case page of
+                        Home ->
+                            Route.Home
 
-                    Tab { name } ->
-                        Route.Tab name
+                        Tab { name } ->
+                            Route.Tab name
 
-                    NotFound ->
-                        Route.Home
-                )
+                        NotFound ->
+                            Route.Home
+                    )
+                , focusCmd
+                ]
             )
 
         ( Resize width height, _ ) ->
@@ -133,6 +124,24 @@ update msg model =
 
         ( ToggleNavDropDown, { gui } ) ->
             ( { model | gui = { gui | navDropDown = not gui.navDropDown } }
+            , Cmd.none
+            )
+
+        ( ToggleEaster, { gui } ) ->
+            let
+                newEaster =
+                    gui.easter + 1 |> Bitwise.and 3
+            in
+            ( { model | gui = { gui | easter = newEaster } }
+            , if newEaster == 3 then
+                focusCmd
+
+              else
+                Cmd.none
+            )
+
+        ( NoOp, _ ) ->
+            ( model
             , Cmd.none
             )
 
@@ -178,10 +187,15 @@ changeRouteTo maybeRoute model =
                                 , text = page.text
                                 }
                       }
-                    , Cmd.none
+                    , focusCmd
                     )
 
                 Nothing ->
                     ( { model | page = NotFound }
                     , Cmd.none
                     )
+
+
+focusCmd : Cmd Msg
+focusCmd =
+    Task.attempt (\_ -> NoOp) (Browser.Dom.focus "focus-me")
