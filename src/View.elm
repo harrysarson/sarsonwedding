@@ -323,7 +323,7 @@ home model =
                 ]
                 { data = model.static.schedule
                 , columns =
-                    [ { header = E.text "Schedule"
+                    [ { header = E.el [ Font.size (baseFont + 4), Font.bold ] (E.text "Schedule")
                       , width = fill
                       , view =
                             \{ time } ->
@@ -395,20 +395,27 @@ tab model page =
                 Err errors ->
                     E.text errors
             )
-        , case model.static.images.sarsonsToBe.landscape |> Array.get page.index of
-            Just url ->
-                E.image
-                    [ E.centerX
-                    , E.width (E.maximum maxContentWidth E.fill)
-                    , Border.shadow defaultShadow
-                    , E.htmlAttribute (Html.Attributes.class "detect-load")
-                    ]
-                    { src = url
-                    , description = "Harry and Sophie, in love."
-                    }
 
-            Nothing ->
-                E.none
+        -- , case model.static.images.sarsonsToBe.landscape |> Array.get page.index of
+        --     Just url ->
+        --         E.image
+        --             [ E.centerX
+        --             , E.width (E.maximum maxContentWidth E.fill)
+        --             , Border.shadow defaultShadow
+        --             , E.htmlAttribute (Html.Attributes.class "detect-load")
+        --             ]
+        --             { src = url
+        --             , description = "Harry and Sophie, in love."
+        --             }
+        --     Nothing ->
+        --         E.none
+        , E.html
+            (Html.iframe
+                [ Html.Attributes.width maxContentWidth
+                , Html.Attributes.src "http://harrysarson.magix.net/tank/"
+                ]
+                []
+            )
         ]
 
 
