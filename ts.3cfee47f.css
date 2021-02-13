@@ -1,0 +1,2 @@
+body,html{height:100%;width:100%;margin:0;display:grid;box-sizing:border-box;font-family:Verdana,Geneva,sans-serif;overflow-y:visible}html{overflow-y:hidden}*,:after,:before{box-sizing:inherit}.login{margin:auto;padding:10px}.login>*{text-align:center;margin:20px 0}.login .go{padding:2px;border-radius:10%}.login button,.login input{height:2.3em}a{color:#532b59;font-weight:700;text-decoration:none}a:hover{color:#a93864}.hidable{opacity:1}.hidable[data-hide=true]{opacity:0}:not(.hidable[data-hide=true]){transition:opacity 1s}
+/*# sourceMappingURL=/ts.3cfee47f.css.map */
