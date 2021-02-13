@@ -1,4 +1,3 @@
-import '../main.scss';
 import 'regenerator-runtime/runtime';
 import {getInfo, tryCache, tryPassword} from './get-info';
 import {Elm} from '../src/Main';
