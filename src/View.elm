@@ -241,7 +241,17 @@ header model =
 footer : Model -> Element Msg
 footer model =
     bannerBar
-        []
+        [ E.inFront
+            (E.el
+                [ E.moveDown (toFloat bannerSize)
+                , E.width E.fill
+                , Background.color colors.navy
+                , Font.center
+                , E.height (bannerSize |> E.px)
+                ]
+                E.none
+            )
+        ]
         (E.link
             [ E.centerX
             , E.centerY
