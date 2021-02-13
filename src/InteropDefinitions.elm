@@ -1,7 +1,6 @@
 module InteropDefinitions exposing (FromElm(..), ToElm, interop)
 
 import Array exposing (Array)
-import Dict exposing (Dict)
 import TsJson.Decode as Decode exposing (Decoder)
 import TsJson.Encode as Encoder exposing (Encoder, required)
 import Types exposing (Flags)

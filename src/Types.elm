@@ -42,7 +42,7 @@ type alias Model =
     , static : Flags
     , gui : Gui
     , key : Browser.Navigation.Key
-    , dims : ViewportSize
+    , dims : Maybe ViewportSize
     }
 
 

@@ -8,7 +8,6 @@ import Browser.Navigation
 import Dict
 import GeneratedPorts
 import Json.Decode
-import Lib.InitApp
 import Route
 import Task
 import Types exposing (..)
@@ -16,11 +15,10 @@ import Url
 import View
 
 
-main : Lib.InitApp.ApplicationProgram Json.Decode.Value Model ViewportSize Msg
+main : Platform.Program Json.Decode.Value Model Msg
 main =
-    Lib.InitApp.application
-        { preInit = preInit
-        , postInit = postInit
+    Browser.application
+        { init = init
         , onUrlRequest = ClickedLink
         , onUrlChange = ChangedUrl
         , view = View.view
@@ -35,25 +33,26 @@ subscriptions _ =
         [ Browser.Events.onResize Resize ]
 
 
-preInit :
-    Json.Decode.Value
-    -> Url.Url
-    -> Browser.Navigation.Key
-    -> ( Browser.Document Never, Task.Task Never ViewportSize )
-preInit _ _ _ =
-    ( { body = [], title = "" }
-    , Browser.Dom.getViewport
-        |> Task.map extractViewport
-    )
+
+-- preInit :
+--     Json.Decode.Value
+--     -> Url.Url
+--     -> Browser.Navigation.Key
+--     -> ( Browser.Document Never, Task.Task Never ViewportSize )
+-- preInit _ _ _ =
+--     ( { body = [], title = "" }
+--     , Browser.Dom.getViewport
+--         |> Task.map extractViewport
+--     )
 
 
-postInit : ViewportSize -> Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
-postInit viewport flags url key =
+init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init flags url key =
     case flags |> GeneratedPorts.decodeFlags of
         Err _ ->
             -- Crash the stack, ts interop + runtime checking of json confirms
             -- we cannot hit this.
-            (\() -> postInit viewport flags url key)
+            (\() -> init flags url key)
                 ()
 
         Ok decodedFlags ->
@@ -62,7 +61,7 @@ postInit viewport flags url key =
                 { page = Home
                 , static = decodedFlags
                 , key = key
-                , dims = viewport
+                , dims = Nothing
                 , gui = { navDropDown = False, easter = 0 }
                 }
 
@@ -118,7 +117,7 @@ update msg model =
             )
 
         ( Resize width height, _ ) ->
-            ( { model | dims = { width = width, height = height } }
+            ( { model | dims = Just { width = width, height = height } }
             , Cmd.none
             )
 
@@ -155,45 +154,54 @@ extractViewport { viewport } =
 
 changeRouteTo : Maybe Route.Page -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
-    case maybeRoute of
-        Nothing ->
-            ( { model | page = NotFound }
-            , Cmd.none
-            )
+    let
+        initCmd =
+            Browser.Dom.getViewport
+                |> Task.map extractViewport
+                |> Task.perform (\{ width, height } -> Resize width height)
+    in
+    Tuple.mapSecond
+        (\cmd -> Cmd.batch [ cmd, initCmd ])
+        (case maybeRoute of
+            Nothing ->
+                ( { model | page = NotFound }
+                , Cmd.none
+                )
 
-        Just Route.Home ->
-            ( { model | page = Home }
-            , Cmd.none
-            )
+            Just Route.Home ->
+                ( { model | page = Home }
+                , Cmd.none
+                )
 
-        Just (Route.Tab name) ->
-            case model.static.pages |> Dict.get name of
-                Just page ->
-                    let
-                        index_ =
-                            case model.page of
-                                Tab { index } ->
-                                    index
+            Just (Route.Tab name) ->
+                case model.static.pages |> Dict.get name of
+                    Just page ->
+                        let
+                            index_ =
+                                case model.page of
+                                    Tab { index } ->
+                                        index
 
-                                _ ->
-                                    -- TODO(harry): pick a better index here
-                                    0
-                    in
-                    ( { model
-                        | page =
-                            Tab
-                                { index = index_
-                                , name = name
-                                , text = page.text
-                                }
-                      }
-                    , focusCmd
-                    )
+                                    _ ->
+                                        -- TODO(harry): pick a better index here
+                                        0
+                        in
+                        ( { model
+                            | page =
+                                Tab
+                                    { index = index_
+                                    , name = name
+                                    , text = page.text
+                                    }
+                          }
+                        , focusCmd
+                        )
 
-                Nothing ->
-                    ( { model | page = NotFound }
-                    , Cmd.none
-                    )
+                    Nothing ->
+                        ( { model | page = NotFound }
+                        , Cmd.none
+                        )
+        )
 
 
 focusCmd : Cmd Msg

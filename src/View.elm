@@ -169,73 +169,80 @@ header model =
                     |> List.indexedMap (\index ( name, onClick ) -> navRowFor name onClick (index /= 0))
                 )
     in
-    case (E.classifyDevice model.dims).orientation of
-        E.Landscape ->
-            let
-                linkWidth =
-                    buttonSize * 4
+    case model.dims of
+        Just dims ->
+            case (E.classifyDevice dims).orientation of
+                E.Landscape ->
+                    let
+                        linkWidth =
+                            buttonSize * 4
 
-                els =
-                    floor (toFloat model.dims.width / toFloat (linkWidth + buttonSize) - 0.5)
-            in
-            bannerBar
-                (if model.gui.navDropDown then
-                    [ E.below (dropDown [ E.alignRight, E.width (linkWidth * 2 |> E.px) ] els) ]
+                        els =
+                            floor (toFloat dims.width / toFloat (linkWidth + buttonSize) - 0.5)
+                    in
+                    bannerBar
+                        (if model.gui.navDropDown then
+                            [ E.below (dropDown [ E.alignRight, E.width (linkWidth * 2 |> E.px) ] els) ]
 
-                 else
-                    []
-                )
-                (E.row
-                    [ E.width E.fill
-                    , E.height E.fill
-                    , E.paddingXY buttonSize 0
-                    , E.spacing buttonSize
-                    , E.clipX
-                    , Region.navigation
-                    , Font.color colors.white
-                    , E.inFront
-                        (E.el
-                            [ E.height E.fill
-                            , E.alignRight
+                         else
+                            []
+                        )
+                        (E.row
+                            [ E.width E.fill
+                            , E.height E.fill
                             , E.paddingXY buttonSize 0
-                            ]
-                            button
-                        )
-                    ]
-                    (navs
-                        |> List.take els
-                        |> List.map
-                            (\( name, onClick ) ->
-                                buttonGui
-                                    [ E.height (buttonSize |> E.px)
-                                    , E.width (linkWidth |> E.px)
-                                    , E.alignLeft
-                                    , E.paddingXY (buttonSize // 6) (buttonSize // 4)
-                                    , Font.color colors.navy
-                                    , Font.center
-                                    , E.mouseOver
-                                        [ Font.color colors.pink ]
-                                    , Events.onClick (ClickedPage onClick)
+                            , E.spacing buttonSize
+                            , E.clipX
+                            , Region.navigation
+                            , Font.color colors.white
+                            , E.inFront
+                                (E.el
+                                    [ E.height E.fill
+                                    , E.alignRight
+                                    , E.paddingXY buttonSize 0
                                     ]
-                                    [ E.el [ E.centerX, E.centerY ] (E.text name) ]
+                                    button
+                                )
+                            ]
+                            (navs
+                                |> List.take els
+                                |> List.map
+                                    (\( name, onClick ) ->
+                                        buttonGui
+                                            [ E.height (buttonSize |> E.px)
+                                            , E.width (linkWidth |> E.px)
+                                            , E.alignLeft
+                                            , E.paddingXY (buttonSize // 6) (buttonSize // 4)
+                                            , Font.color colors.navy
+                                            , Font.center
+                                            , E.mouseOver
+                                                [ Font.color colors.pink ]
+                                            , Events.onClick (ClickedPage onClick)
+                                            ]
+                                            [ E.el [ E.centerX, E.centerY ] (E.text name) ]
+                                    )
                             )
-                    )
-                )
-
-        E.Portrait ->
-            bannerBar
-                (if model.gui.navDropDown then
-                    [ E.below
-                        (dropDown
-                            [ E.width E.fill ]
-                            0
                         )
-                    ]
 
-                 else
-                    []
-                )
-                button
+                E.Portrait ->
+                    bannerBar
+                        (if model.gui.navDropDown then
+                            [ E.below
+                                (dropDown
+                                    [ E.width E.fill ]
+                                    0
+                                )
+                            ]
+
+                         else
+                            []
+                        )
+                        button
+
+        Nothing ->
+            bannerBar
+                []
+                E.none
 
 
 footer : Model -> Element Msg
