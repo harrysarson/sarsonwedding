@@ -258,15 +258,7 @@ footer model =
                 ]
                 E.none
             )
-        , E.inFront
-            (E.el
-                [ Background.color (E.rgba 0 0 0 0)
-                , E.width (50 |> E.px)
-                , E.height (bannerSize |> E.px)
-                , Events.onClick ToggleEaster
-                ]
-                E.none
-            )
+        , E.alignBottom
         ]
         (E.link
             [ E.centerX
@@ -370,7 +362,7 @@ tab model page =
             , E.width (E.maximum maxContentWidth E.fill)
             , E.centerX
             , Region.heading 1
-            , Font.size (baseFont * 3)
+            , Font.size (baseFont * 5 // 2)
             ]
             (E.text page.name)
 
@@ -529,7 +521,11 @@ body model =
                 NotFound ->
                     notFound model
             )
-        , footer model
+        , E.el
+            [ E.width E.fill
+            , E.height (bannerSize |> E.px)
+            ]
+            E.none
         ]
 
 
@@ -538,15 +534,12 @@ view model =
     { title = "Sarson's Wedding"
     , body =
         [ E.layout
-            ([ Just
-                (Font.family
-                    [ Font.typeface "Verdana"
-                    , Font.sansSerif
-                    ]
-                )
-             ]
-                |> List.filterMap identity
-            )
+            [ Font.family
+                [ Font.typeface "Verdana"
+                , Font.sansSerif
+                ]
+            , E.inFront (footer model)
+            ]
             (body model)
         ]
     }

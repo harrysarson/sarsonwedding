@@ -47,7 +47,7 @@ async function checkAndLoadApp(password: string) {
 			}
 		}
 	} else {
-		loadApp(key);
+		requestAnimationFrame(() => loadApp(key));
 	}
 }
 
@@ -158,7 +158,7 @@ async function main() {
 			checkAndLoadApp(password);
 		});
 	} else {
-		throw new Error('Missing essential loging html elmements!');
+		throw new Error('Missing essential login html elements!');
 	}
 }
 

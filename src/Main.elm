@@ -174,22 +174,17 @@ changeRouteTo maybeRoute model =
                 )
 
             Just (Route.Tab name) ->
-                case model.static.pages |> Dict.get name of
-                    Just page ->
-                        let
-                            index_ =
-                                case model.page of
-                                    Tab { index } ->
-                                        index
-
-                                    _ ->
-                                        -- TODO(harry): pick a better index here
-                                        0
-                        in
+                case
+                    model.static.pages
+                        |> Dict.toList
+                        |> List.indexedMap (\i ( k, v ) -> ( i, k, v ))
+                        |> List.filter (\( _, k, _ ) -> k == name)
+                of
+                    ( index, _, page ) :: _ ->
                         ( { model
                             | page =
                                 Tab
-                                    { index = index_
+                                    { index = index
                                     , name = name
                                     , text = page.text
                                     }
@@ -197,7 +192,7 @@ changeRouteTo maybeRoute model =
                         , focusCmd
                         )
 
-                    Nothing ->
+                    [] ->
                         ( { model | page = NotFound }
                         , Cmd.none
                         )
