@@ -371,14 +371,14 @@ tab : Model -> { index : Int, name : String, text : String } -> E.Element Msg
 tab model page =
     homeOrTab
         []
-        [ E.el
+        [ E.paragraph
             [ E.spacing baseFont
             , E.width (E.maximum maxContentWidth E.fill)
             , E.centerX
             , Region.heading 1
             , Font.size (baseFont * 5 // 2)
             ]
-            (E.text page.name)
+            [ E.text page.name ]
         , E.el
             [ E.width (E.maximum maxContentWidth E.fill)
             , E.padding (padding * 3)
