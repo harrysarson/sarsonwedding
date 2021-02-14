@@ -350,6 +350,20 @@ home model =
                     ]
                 }
             )
+        , case model.static.images.sarsonsToBe.portrait |> Array.get 4 of
+            Just url ->
+                E.image
+                    [ E.centerX
+                    , E.width (E.maximum maxContentWidth E.fill)
+                    , Border.shadow defaultShadow
+                    , E.htmlAttribute (Html.Attributes.class "detect-load")
+                    ]
+                    { src = url
+                    , description = "Harry and Sophie, in love."
+                    }
+
+            Nothing ->
+                E.none
         ]
 
 
@@ -365,20 +379,6 @@ tab model page =
             , Font.size (baseFont * 5 // 2)
             ]
             (E.text page.name)
-
-        -- , case model.static.images.sarsonsToBe.portrait |> Array.get page.index of
-        --     Just url ->
-        --         E.image
-        --             [ E.centerX
-        --             , E.width (E.maximum (maxContentWidth // 3) E.fill)
-        --             , Border.shadow defaultShadow
-        --             , E.htmlAttribute (Html.Attributes.class "detect-load")
-        --             ]
-        --             { src = url
-        --             , description = "Harry and Sophie, in love."
-        --             }
-        --     Nothing ->
-        --         E.none
         , E.el
             [ E.width (E.maximum maxContentWidth E.fill)
             , E.padding (padding * 3)
