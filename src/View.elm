@@ -132,20 +132,30 @@ header model =
                 , Font.color colors.pink
                 , E.height (buttonSize |> E.px)
                 , E.width (buttonSize |> E.px)
-                , E.paddingXY (buttonSize // 6) (buttonSize // 4)
+                , E.paddingXY (buttonSize // 6) (buttonSize // 5)
                 , Events.onClick ToggleNavDropDown
                 , E.mouseOver
                     [ Font.color colors.grey ]
                 ]
-                (List.repeat
-                    3
-                    (E.el
-                        [ E.width E.fill
-                        , Border.widthXY 0 3
-                        , Border.rounded 2
-                        ]
-                        E.none
-                    )
+                (List.concat
+                    [ List.repeat
+                        3
+                        (E.el
+                            [ E.width E.fill
+                            , Border.widthXY 0 2
+                            , Border.rounded 2
+                            ]
+                            E.none
+                        )
+                    , [ E.el
+                            [ E.centerX
+                            , Font.size (buttonSize // 5)
+                            , Font.color colors.grey
+                            , Font.bold
+                            ]
+                            (E.text "menu")
+                      ]
+                    ]
                 )
 
         dropDown props skip =
