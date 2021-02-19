@@ -268,6 +268,16 @@ footer model =
                 ]
                 E.none
             )
+        , E.behindContent
+            (E.el
+                [ E.width (30 |> E.px)
+                , E.height (bannerSize |> E.px)
+                , Background.color (E.rgba 0 0 0 0)
+                , Font.center
+                , Events.onClick ToggleEaster
+                ]
+                E.none
+            )
         , E.alignBottom
         ]
         (E.link
@@ -316,6 +326,7 @@ home model =
         [ E.column
             [ E.centerX
             , E.spacing baseFont
+            , Region.heading 1
             ]
             [ E.el nameAttrs (E.text "Harry Sarson")
             , E.el
