@@ -11,6 +11,7 @@ type alias Flags =
     { pages : Dict String { text : String }
     , images :
         { invite : String
+        , flower : { top : String, bottom : String }
         , sarsonsToBe :
             { portrait : Array String
             , landscape : Array String

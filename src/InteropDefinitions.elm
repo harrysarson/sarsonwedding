@@ -71,19 +71,22 @@ scheduleRow =
 images :
     Decode.Decoder
         { invite : String
+        , flower : { top : String, bottom : String }
         , sarsonsToBe :
             { portrait : Array String
             , landscape : Array String
             }
         }
 images =
-    Decode.map2
-        (\invite sarsonsToBe ->
+    Decode.map3
+        (\invite flower_ sarsonsToBe ->
             { invite = invite
+            , flower = flower_
             , sarsonsToBe = sarsonsToBe
             }
         )
         (Decode.field "invite" Decode.string)
+        (Decode.field "flower" flower)
         (Decode.field "sarsonsToBe"
             (Decode.map2
                 (\portrait landscape ->
@@ -95,3 +98,17 @@ images =
                 (Decode.field "landscape" (Decode.array Decode.string))
             )
         )
+
+
+flower :
+    Decode.Decoder
+        { top : String, bottom : String }
+flower =
+    Decode.map2
+        (\top bottom ->
+            { top = top
+            , bottom = bottom
+            }
+        )
+        (Decode.field "top" Decode.string)
+        (Decode.field "bottom" Decode.string)

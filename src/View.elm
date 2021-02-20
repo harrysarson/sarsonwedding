@@ -42,6 +42,17 @@ fonts =
             [ Font.typeface "Great Vibes"
             , Font.typeface "cursive"
             ]
+    , text =
+        Font.family
+            [ Font.typeface "Montserrat"
+            , Font.typeface "sans-serif"
+            ]
+    , mono =
+        Font.family
+            [ Font.typeface "B612 Mono"
+            , Font.typeface "Montserrat"
+            , Font.typeface "monospace"
+            ]
     }
 
 
@@ -341,26 +352,51 @@ home model =
             , Font.size (baseFont * 2)
             ]
             (E.text "Saturday 5th June 2021")
-        , E.el
+        , E.column
             [ E.width (E.maximum maxContentWidth E.fill)
-            , E.padding (padding * 3)
-            , E.spacing (padding * 3)
             , E.centerX
+            , E.padding padding
             , Border.shadow defaultShadow
             , Background.color colors.navy
             , Font.color colors.white
             ]
-            (E.table
+            [ E.row
+                []
+                [ E.el
+                    [ E.width (E.fillPortion 2)
+                    , E.padding (padding * 2)
+                    , Font.size (baseFont + 10)
+                    , Font.bold
+                    ]
+                    (E.text "Schedule")
+                , E.image
+                    [ E.centerX
+                    , E.width (E.fillPortion 1)
+                    ]
+                    { src = model.static.images.flower.top
+                    , description = "3/4 of a flower."
+                    }
+                ]
+            , E.table
                 [ E.spacing baseFont
                 , Font.size baseFont
+                , E.paddingEach
+                    { bottom = padding * 2
+                    , left = padding * 2
+                    , right = padding * 2
+                    , top = 0
+                    }
+                , E.spacing (padding * 3)
                 ]
                 { data = model.static.schedule
                 , columns =
-                    [ { header = E.el [ Font.size (baseFont + 4), Font.bold ] (E.text "Schedule")
+                    [ { header = E.none
                       , width = fill
                       , view =
                             \{ time } ->
-                                E.text time
+                                E.el
+                                    [ fonts.mono ]
+                                    (E.text time)
                       }
                     , { header = E.none
                       , width = fill
@@ -370,7 +406,20 @@ home model =
                       }
                     ]
                 }
-            )
+            , E.row
+                []
+                [ E.image
+                    [ E.centerX
+                    , E.width (E.fillPortion 1)
+                    ]
+                    { src = model.static.images.flower.bottom
+                    , description = "3/4 of a flower."
+                    }
+                , E.el
+                    [ E.width (E.fillPortion 2) ]
+                    E.none
+                ]
+            ]
         , case model.static.images.sarsonsToBe.portrait |> Array.get 4 of
             Just url ->
                 E.image
@@ -521,10 +570,7 @@ body model =
         , E.height E.fill
         , E.centerX
         , Background.color colors.lightGrey
-        , Font.family
-            [ Font.typeface "Montserrat"
-            , Font.typeface "sans-serif"
-            ]
+        , fonts.text
         ]
         [ header model
         , E.el

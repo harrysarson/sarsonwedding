@@ -2,6 +2,8 @@ import 'regenerator-runtime/runtime';
 import {getInfo, tryCache, tryPassword} from './get-info';
 import {Elm} from '../src/Main';
 import invite from '../images/invite.jpg';
+import flowerTop from '../images/flower-top.png';
+import flowerBottom from '../images/flower-bottom.png';
 
 import portrait0 from '../images/sarsons-to-be/portrait/0.jpeg';
 import portrait1 from '../images/sarsons-to-be/portrait/1.jpeg';
@@ -64,6 +66,7 @@ async function loadApp(key: CryptoKey) {
 			schedule: info.schedule,
 			images: {
 				invite,
+				flower: {top: flowerTop, bottom: flowerBottom},
 				sarsonsToBe: {
 					portrait: [
 						portrait0,
