@@ -1,6 +1,6 @@
 /elm-stuff/
 /dist/
 /node_modules/
-/.cache/
+/.parcel-cache/
 /private.sh
 /src/Main/index.d.ts
