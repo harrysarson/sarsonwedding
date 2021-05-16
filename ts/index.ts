@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime';
 import {getInfo, tryCache, tryPassword} from './get-info';
+
 import {Elm} from '../src/Main.elm';
+
 import invite from 'url:../images/invite.jpg';
 import flowerTop from 'url:../images/flower-top.png';
 import flowerBottom from 'url:../images/flower-bottom.png';
