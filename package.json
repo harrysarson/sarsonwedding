@@ -1,13 +1,12 @@
 {
 	"scripts": {
-		"configure": "elm-ts-interop --entrypoint Main --output src/Main/index.d.ts",
+		"configure": "echo 'missing dep elm-ts-interop'; elm-ts-interop --entrypoint Main --output src/Main/index.d.ts",
 		"build": "npm run configure && parcel build index.html 404.html",
 		"autogen": "ts-node ts/generate-encrypted $PASSWORD_HASH ./ts/encrypted.ts",
 		"start": "parcel index.html --public-url /sarsonwedding",
 		"test": "npm run configure && tsc --noEmit -p . && ava"
 	},
 	"devDependencies": {
-		"@incrementalelm/elm-ts-interop-pro": "0.0.11",
 		"@parcel/transformer-elm": "2.0.0-beta.2",
 		"@parcel/transformer-image": "2.0.0-beta.2",
 		"@parcel/transformer-raw": "2.0.0-beta.2",
