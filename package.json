@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"configure": "echo 'missing dep elm-ts-interop'; elm-ts-interop --entrypoint Main --output src/Main/index.d.ts",
+		"configure": "echo 'missing dep elm-ts-interop' || elm-ts-interop --entrypoint Main --output src/Main/index.d.ts",
 		"build": "npm run configure && parcel build index.html 404.html",
 		"autogen": "ts-node ts/generate-encrypted $PASSWORD_HASH ./ts/encrypted.ts",
 		"start": "parcel index.html --public-url /sarsonwedding",
