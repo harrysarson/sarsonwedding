@@ -66,7 +66,7 @@ routeToPieces : Page -> List String
 routeToPieces page =
     case page of
         Home ->
-            []
+            [ "sarsonwedding" ]
 
         Tab name ->
-            [ "info", Url.percentEncode name ]
+            [ "sarsonwedding", "info", Url.percentEncode name ]
