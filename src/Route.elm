@@ -20,8 +20,8 @@ type Page
 parser : Parser (Page -> a) a
 parser =
     oneOf
-        [ Parser.map Home Parser.top
-        , Parser.map Tab (s "info" </> Parser.custom "PAGE" Url.percentDecode)
+        [ Parser.map Home (s "sarsonwedding")
+        , Parser.map Tab (s "sarsonwedding" </> s "info" </> Parser.custom "PAGE" Url.percentDecode)
         ]
 
 
