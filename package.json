@@ -3,7 +3,7 @@
 		"configure": "elm-ts-interop --entrypoint Main --output src/Main/index.d.ts",
 		"build": "npm run configure && parcel build index.html 404.html",
 		"autogen": "ts-node ts/generate-encrypted $PASSWORD_HASH ./ts/encrypted.ts",
-		"start": "parcel index.html",
+		"start": "parcel index.html --public-url /sarsonwedding",
 		"test": "npm run configure && tsc --noEmit -p . && ava"
 	},
 	"devDependencies": {
